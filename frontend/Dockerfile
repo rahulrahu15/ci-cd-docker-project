@@ -1,7 +1,18 @@
-FROM nginx:alpine
+# ------------------------
+# Stage 1: Build Stage (optional, if you have build tools)
+# ------------------------
+# Skipped if frontend is static HTML/CSS/JS
 
-COPY index.html /usr/share/nginx/html/index.html
+# ------------------------
+# Stage 2: Runtime Stage (Distroless Static)
+# ------------------------
+FROM gcr.io/distroless/static:nonroot
 
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+WORKDIR /usr/share/nginx/html
+
+# Copy frontend static files
+COPY . .
+
+# Command to serve files (distroless static requires CMD)
+CMD ["/usr/sbin/nginx","-g","daemon off;"]
 
