@@ -50,7 +50,7 @@ ci-cd-docker-project/
 │ ├── index.html
 │ └── Dockerfile
 │
-└── .github/workflows/ci.yml
+└── .github/workflows/cicd.yml
 
 
 ---
