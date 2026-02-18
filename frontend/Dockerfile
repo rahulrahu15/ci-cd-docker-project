@@ -1,18 +1,17 @@
-# ------------------------
-# Stage 1: Build Stage (optional, if you have build tools)
-# ------------------------
-# Skipped if frontend is static HTML/CSS/JS
-
-# ------------------------
-# Stage 2: Runtime Stage (Distroless Static)
-# ------------------------
-FROM gcr.io/distroless/static:nonroot
+# Use official Nginx image to serve static files
+FROM nginx:alpine
 
 WORKDIR /usr/share/nginx/html
 
-# Copy frontend static files
+# Remove default Nginx static files
+RUN rm -rf ./*
+
+# Copy your frontend static files
 COPY . .
 
-# Command to serve files (distroless static requires CMD)
-CMD ["/usr/sbin/nginx","-g","daemon off;"]
+# Expose HTTP port
+EXPOSE 80
+
+# Start Nginx in the foreground
+CMD ["nginx", "-g", "daemon off;"]
 

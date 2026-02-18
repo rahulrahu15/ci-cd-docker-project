@@ -1,31 +1,26 @@
-# ------------------------
-# Stage 1: Build Stage
-# ------------------------
+# Stage 1: Builder
 FROM python:3.11-slim AS builder
 
 WORKDIR /app
 
-# Copy requirements and install to local directory
+# Install dependencies into /app/.local
 COPY requirements.txt .
-RUN pip install --user --no-cache-dir -r requirements.txt
+RUN pip install --target=/app/.local -r requirements.txt
 
 # Copy app code
 COPY . .
 
-# ------------------------
-# Stage 2: Runtime Stage (Distroless)
-# ------------------------
+# Stage 2: Runtime (Distroless)
 FROM gcr.io/distroless/python3:latest
 
 WORKDIR /app
 
-# Copy Python packages from builder
-COPY --from=builder /root/.local /root/.local
-ENV PATH=/root/.local/bin:$PATH
-
-# Copy app code
+# Copy app code + dependencies
 COPY --from=builder /app /app
 
-# Run Flask app
+# Set Python path for Distroless
+ENV PYTHONPATH=/app/.local
+
+# Run Flask
 CMD ["app.py"]
 
